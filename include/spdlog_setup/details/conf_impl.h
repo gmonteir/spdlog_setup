@@ -536,18 +536,18 @@ auto find_value_from_map(
 
 template <class Fn, class ErrFn>
 auto add_msg_on_err(Fn &&fn, ErrFn &&add_msg_on_err_fn) ->
-    typename std::result_of<Fn()>::type {
+  std::invoke_result_t<Fn()> {
 
-    // std
-    using std::exception;
-    using std::move;
-    using std::string;
+  // std
+  using std::exception;
+  using std::move;
+  using std::string;
 
-    try {
-        return fn();
-    } catch (const exception &e) {
-        throw setup_error(add_msg_on_err_fn(e.what()));
-    }
+  try {
+    return std::invoke(std::forward<Fn>(fn));
+  } catch (const exception &e) {
+    throw setup_error(add_msg_on_err_fn(e.what()));
+  }
 }
 
 inline auto parse_max_size(const std::string &max_size_str) -> uint64_t {
